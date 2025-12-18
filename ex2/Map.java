@@ -1,4 +1,4 @@
-package assignments.Ex2;
+package ex2;
 import java.io.Serializable;
 /**
  * This class represents a 2D map (int[w][h]) as a "screen" or a raster matrix or maze over integers.
