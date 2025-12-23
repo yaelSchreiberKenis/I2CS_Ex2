@@ -10,6 +10,7 @@ import java.io.Serializable;
 public class Map implements Map2D, Serializable{
 
     // edit this class below
+    private int[][] matrix;
 	/**
 	 * Constructs a w*h 2D raster map with an init value v.
 	 * @param w
@@ -32,34 +33,52 @@ public class Map implements Map2D, Serializable{
 	}
 	@Override
 	public void init(int w, int h, int v) {
-
+        this.matrix = new int[w][h];
+        for (int i = 0; i < w; i++){
+            for (int j = 0; j < h; j++){
+                matrix[i][j] = v;
+            }
+        }
 	}
 	@Override
 	public void init(int[][] arr) {
-
+        matrix = new int[arr.length][arr[0].length];
+        for (int i = 0; i < arr.length; i++){
+            for (int j = 0; j < arr[0].length; j++){
+                matrix[i][j] = arr[i][j];
+            }
+        }
 	}
 	@Override
 	public int[][] getMap() {
 		int[][] ans = null;
+        ans = new int[matrix.length][matrix[0].length];
+        for (int i = 0; i < ans.length; i++){
+            for (int j = 0; j < ans[i].length; j++){
+                ans[i][j] = matrix[i][j];
+            }
+        }
 
 		return ans;
 	}
 	@Override
 	public int getWidth() {
         int ans = -1;
-
+        ans = matrix.length;
         return ans;
     }
 	@Override
 	public int getHeight() {
         int ans = -1;
-
+        ans = matrix[0].length;
         return ans;
     }
 	@Override
 	public int getPixel(int x, int y) {
+        if(matrix.length - 1 < x) {return -1;}
+        if(matrix[0].length - 1 < y) {return -1;}
         int ans = -1;
-
+        ans = matrix[x][y];
         return ans;
     }
 	@Override
@@ -74,14 +93,12 @@ public class Map implements Map2D, Serializable{
     }
 	@Override
 	public void setPixel(Pixel2D p, int v) {
-
+        setPixel(p.getX(), p.getY(), v);
 	}
 
     @Override
     public boolean isInside(Pixel2D p) {
-        boolean ans = true;
-
-        return ans;
+        return (matrix.length > p.getX() && matrix[0].length > p.getY());
     }
 
     @Override
