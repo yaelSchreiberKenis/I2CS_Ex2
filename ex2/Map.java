@@ -33,7 +33,7 @@ public class Map implements Map2D, Serializable{
 	}
 	@Override
 	public void init(int w, int h, int v) {
-        this.matrix = new int[w][h];
+        matrix = new int[w][h];
         for (int i = 0; i < w; i++){
             for (int j = 0; j < h; j++){
                 matrix[i][j] = v;
@@ -63,15 +63,11 @@ public class Map implements Map2D, Serializable{
 	}
 	@Override
 	public int getWidth() {
-        int ans = -1;
-        ans = matrix.length;
-        return ans;
+        return matrix.length;
     }
 	@Override
 	public int getHeight() {
-        int ans = -1;
-        ans = matrix[0].length;
-        return ans;
+        return matrix[0].length;
     }
 	@Override
 	public int getPixel(int x, int y) {
@@ -83,13 +79,11 @@ public class Map implements Map2D, Serializable{
     }
 	@Override
 	public int getPixel(Pixel2D p) {
-        int ans = -1;
-
-        return ans;
+        return matrix[p.getX()][p.getY()];
 	}
 	@Override
 	public void setPixel(int x, int y, int v) {
-
+        matrix[x][y] = v;
     }
 	@Override
 	public void setPixel(Pixel2D p, int v) {
@@ -103,19 +97,28 @@ public class Map implements Map2D, Serializable{
 
     @Override
     public boolean sameDimensions(Map2D p) {
-        boolean ans = false;
-
-        return ans;
+        return  p.getHeight() == getHeight() && p.getWidth() == getWidth();
     }
 
     @Override
     public void addMap2D(Map2D p) {
-
+        if (!sameDimensions(p)) {
+            return;
+        }
+        for (int i = 0; i < matrix.length; i++) {
+            for (int j = 0; j < matrix[0].length; j++) {
+                matrix[i][j] += p.getPixel(i,j);
+            }
+        }
     }
 
     @Override
     public void mul(double scalar) {
-
+        for (int i = 0; i < matrix.length; i++) {
+            for (int j = 0; j < matrix[0].length; j++) {
+                matrix[i][j] = (int)(matrix[i][j]*scalar);
+            }
+        }
     }
 
     @Override
