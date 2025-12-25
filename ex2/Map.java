@@ -123,12 +123,40 @@ public class Map implements Map2D, Serializable{
 
     @Override
     public void rescale(double sx, double sy) {
-
+        int newWidth = (int)(sx * getWidth());
+        int newHeight = (int)(sy * getHeight());
+        int[][] newMatrix = new int[newWidth][newHeight];
+        for (int i = 0; i < newWidth; i++){
+            for (int j = 0; j < newHeight; j++){
+                int previousI = (int)(i / sx);
+                int previousJ = (int)(j / sy);
+                if (previousI >= getWidth()){
+                    previousI = getWidth() - 1;
+                }
+                if (previousJ >= getHeight()){
+                    previousJ = getHeight() - 1;
+                }
+                newMatrix[i][j] = matrix[previousI][previousJ];
+            }
+        }
+        matrix = newMatrix;
     }
 
     @Override
     public void drawCircle(Pixel2D center, double rad, int color) {
-
+        int startX = (int)Math.max(center.getX() - rad, 0);
+        int startY = (int)Math.max(center.getY() - rad, 0);
+        int endX = (int)Math.min(center.getX() + rad, getHeight() - 1);
+        int endY = (int)Math.min(center.getY() + rad, getHeight() - 1);
+        for (int i = startX; i < endX; i++) {
+            for (int j = startY; j < endY; j++) {
+                int xDiff = i -  center.getX();
+                int yDiff = j - center.getY();
+                if ((xDiff * xDiff) + (yDiff * yDiff) < rad * rad) {
+                    matrix[i][j] = color;
+                }
+            }
+        }
     }
 
     @Override
