@@ -97,7 +97,10 @@ public class Map implements Map2D, Serializable{
 
     @Override
     public boolean sameDimensions(Map2D p) {
-        return  p.getHeight() == getHeight() && p.getWidth() == getWidth();
+        if (p == null) {
+            return false;
+        }
+        return p.getHeight() == getHeight() && p.getWidth() == getWidth();
     }
 
     @Override
@@ -171,9 +174,23 @@ public class Map implements Map2D, Serializable{
 
     @Override
     public boolean equals(Object ob) {
-        boolean ans = false;
-
-        return ans;
+        if(ob == null) {
+            return false;
+        }
+        if (ob.getClass() != this.getClass()) {
+            return false;
+        }
+        if (!sameDimensions((Map2D)ob)) {
+            return false;
+        }
+        for (int i = 0; i < matrix.length; i++) {
+            for (int j = 0; j < matrix[0].length; j++) {
+                if (matrix[i][j] != ((Map)ob).matrix[i][j]) {
+                    return false;
+                }
+            }
+        }
+        return true;
     }
 	@Override
 	/** 
