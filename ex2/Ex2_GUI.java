@@ -8,6 +8,8 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.awt.Color;
+import java.util.Random;
 
 /**
  * Intro2CS_2026A
@@ -23,7 +25,61 @@ public class Ex2_GUI {
     private static final String DELIMITER = " ";
 
     public static void drawMap(Map2D map) {
-        //
+        int[][] matrix = map.getMap();
+        int rows = matrix.length;
+        int cols = matrix[0].length;
+
+        double border = 0.005; // Border thickness
+        double textSpace = 0.8;
+        // Canvas setup
+        StdDraw.setXscale(0, cols);
+        StdDraw.setYscale(0, rows + textSpace);
+        StdDraw.clear(Color.WHITE);
+        StdDraw.setPenRadius(border);
+
+
+        for (int row = 0; row < rows; row++) {
+            for (int col = 0; col < cols; col++) {
+
+                double x = col + 0.5;
+                double y = rows - row - 0.5;
+
+                // Convert matrix value to color (0–255 grayscale)
+                int value = matrix[row][col];
+                Color cellColor = valueToColor(value);
+
+                // Draw filled square slightly smaller to leave grid border
+                StdDraw.setPenColor(cellColor);
+                StdDraw.filledSquare(x, y, 0.5 - border);
+
+                // Write the value in text
+                Color textColor = cellColor == StdDraw.BLACK ? StdDraw.WHITE : StdDraw.BLACK;
+                StdDraw.setPenColor(textColor);
+                StdDraw.text(x, y, String.valueOf(value));
+
+                // Draw black grid border
+                StdDraw.setPenColor(Color.BLACK);
+                StdDraw.square(x, y, 0.5);
+
+            }
+        }
+
+        StdDraw.show();
+    }
+
+    private static Color valueToColor(int value) {
+        if (value == -1)
+        {
+            return StdDraw.BLACK;
+        }
+        return switch (value % 5) {
+            case 0 -> StdDraw.WHITE;
+            case 1 -> StdDraw.GREEN;
+            case 2 -> StdDraw.BLUE;
+            case 3 -> StdDraw.RED;
+            case 4 -> StdDraw.GRAY;
+            default -> StdDraw.BLACK;
+        };
     }
 
     /**
@@ -95,9 +151,24 @@ public class Ex2_GUI {
     }
 
     public static void main(String[] a) {
-        String mapFile = "map.txt";
-        Map2D map = loadMap(mapFile);
-        drawMap(map);
+        Random rand = new Random(42);
+        Map map = generateRandomMap(rand);
+        saveMap(map, "map.txt");
+        Map map2 = (Map)loadMap("map.txt");
+        drawMap(map2);
     }
+
     /// ///////////// Private functions ///////////////
+    public static Map generateRandomMap (Random rand) {
+
+        int height = rand.nextInt(9) + 2;
+        int width = rand.nextInt(9) + 2;
+        Map map = new Map(width, height, -1);
+        for (int i = 0; i < height; i++) {
+            for (int j = 0; j < width; j++) {
+                map.setPixel(j, i, rand.nextInt(5));
+            }
+        }
+        return map;
+    }
 }

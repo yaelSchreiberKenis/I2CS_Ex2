@@ -1,5 +1,7 @@
 package ex2;
 import java.io.Serializable;
+import java.util.LinkedList;
+import java.util.Queue;
 /**
  * This class represents a 2D map (int[w][h]) as a "screen" or a raster matrix or maze over integers.
  * This is the main class needed to be implemented.
@@ -136,7 +138,7 @@ public class Map implements Map2D, Serializable{
                 newMatrix[y][x] = matrix[previousY][previousX];
             }
         }
-        matrix = newMatrix;
+        init(newMatrix);
     }
 
     @Override
@@ -246,8 +248,33 @@ public class Map implements Map2D, Serializable{
 	 */
 	public Pixel2D[] shortestPath(Pixel2D p1, Pixel2D p2, int obsColor, boolean cyclic) {
 		Pixel2D[] ans = null;  // the result.
+        Node[][] nodeArray = new Node[matrix.length][matrix[0].length];
+        for (int y = 0; y < matrix.length; y++) {
+            for (int x = 0; x < matrix[0].length; x++) {
+                nodeArray[y][x] = new Node(new Index2D(x, y));
+            }
+        }
 
-		return ans;
+        Queue<Node> q = new LinkedList<>();
+        q.add(new Node(p1));
+        while (!q.isEmpty()) {
+            Node current = q.poll();
+            if (getPixel(current.current) == obsColor) {
+                continue;
+            }
+            if (current.current.equals(p2)) {
+                // TODO return array of all parents with stack
+                return ans;
+            }
+
+
+
+            current.visited = true;
+
+
+        }
+
+        return ans;
 	}
     @Override
     public Map2D allDistance(Pixel2D start, int obsColor, boolean cyclic) {
@@ -311,5 +338,22 @@ public class Map implements Map2D, Serializable{
         }
 
         return result;
+    }
+}
+
+class Node {
+    public Pixel2D current;
+    public Node parent;
+    public boolean visited;
+
+    public Node(Pixel2D p) {
+        this.current = p;
+        this.parent = null;
+        this.visited = false;
+    }
+
+    public void visit(Node parent) {
+        this.parent = parent;
+        this.visited = true;
     }
 }

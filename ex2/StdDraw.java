@@ -1,4 +1,4 @@
-package classes.week4;
+package ex2;
 
 //package stdDraw;
 // https://introcs.cs.princeton.edu/java/stdlib/StdDraw.java.html
