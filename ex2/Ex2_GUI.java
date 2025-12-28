@@ -550,16 +550,34 @@ public class Ex2_GUI {
         if (value == PATH_COLOR) {
             return Color.MAGENTA;  // Distinct color for path that's not used in matrix
         }
-        if (value == -1)
-        {
+        if (value == -1) {
             return StdDraw.BLACK;
         }
-        return switch (value % 5) {
+        
+        // Extended color palette with many distinct colors
+        // Using modulo 20 to cycle through 20 different colors
+        int colorIndex = Math.abs(value) % 20;
+        return switch (colorIndex) {
             case 0 -> StdDraw.WHITE;
             case 1 -> StdDraw.GREEN;
             case 2 -> StdDraw.BLUE;
             case 3 -> StdDraw.RED;
             case 4 -> StdDraw.GRAY;
+            case 5 -> Color.YELLOW;
+            case 6 -> Color.CYAN;
+            case 7 -> Color.ORANGE;
+            case 8 -> Color.PINK;
+            case 9 -> new Color(128, 0, 128);      // Purple
+            case 10 -> new Color(255, 192, 203);    // Pink
+            case 11 -> new Color(0, 128, 128);     // Teal
+            case 12 -> new Color(255, 165, 0);      // Orange
+            case 13 -> new Color(128, 128, 0);      // Olive
+            case 14 -> new Color(0, 255, 127);     // Spring Green
+            case 15 -> new Color(255, 20, 147);     // Deep Pink
+            case 16 -> new Color(0, 191, 255);     // Deep Sky Blue
+            case 17 -> new Color(255, 140, 0);     // Dark Orange
+            case 18 -> new Color(50, 205, 50);     // Lime Green
+            case 19 -> new Color(138, 43, 226);    // Blue Violet
             default -> StdDraw.BLACK;
         };
     }
