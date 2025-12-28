@@ -6,16 +6,17 @@ This project implements a 2D raster map system with graphical visualization capa
 
 ## Table of Contents
 
-1. [Interfaces](#interfaces)
+1. [Getting Started](#getting-started)
+2. [Interfaces](#interfaces)
    - [Map2D](#map2d-interface)
    - [Pixel2D](#pixel2d-interface)
-2. [Classes](#classes)
+3. [Classes](#classes)
    - [Map](#map-class)
    - [Index2D](#index2d-class)
    - [Ex2_GUI](#ex2_gui-class)
    - [StdDraw](#stddraw-class)
-3. [Usage Examples](#usage-examples)
-4. [Keyboard Shortcuts](#keyboard-shortcuts)
+4. [Usage Examples](#usage-examples)
+5. [Keyboard Shortcuts](#keyboard-shortcuts)
 
 ---
 
@@ -218,7 +219,7 @@ Index2D(Pixel2D other)          // Copy coordinates from another Pixel2D
 
 **drawMap(Map2D map)**
 - Renders map with menu and status area
-- Color mapping: -1=Black, 0-4=White/Green/Blue/Red/Gray (mod 5)
+- Color mapping: -1=Black, values cycle through 20 distinct colors (mod 20)
 - Displays pixel values as text on cells
 
 **drawMap(Map2D map, String label)**
@@ -249,6 +250,7 @@ The main method provides keyboard-driven interaction:
 - Start/end points colored randomly (0-4)
 - Maze generation uses random values 0-4
 - No borders in cyclic mode
+- 20 distinct colors for rich visualization
 
 ##### Helper Methods
 
@@ -270,6 +272,8 @@ The main method provides keyboard-driven interaction:
 
 #### Color Mapping
 
+The application supports 20 distinct colors that cycle based on the integer value:
+
 ```java
 -1  → BLACK (obstacle)
 0   → WHITE
@@ -277,8 +281,25 @@ The main method provides keyboard-driven interaction:
 2   → BLUE
 3   → RED
 4   → GRAY
+5   → YELLOW
+6   → CYAN
+7   → ORANGE
+8   → PINK
+9   → PURPLE
+10  → LIGHT PINK
+11  → TEAL
+12  → DARK ORANGE
+13  → OLIVE
+14  → SPRING GREEN
+15  → DEEP PINK
+16  → DEEP SKY BLUE
+17  → DARK ORANGE
+18  → LIME GREEN
+19  → BLUE VIOLET
 100 → MAGENTA (path visualization)
 ```
+
+Colors cycle using modulo 20, so any integer value will map to one of these 20 colors. This provides rich visual variety for map visualization.
 
 ---
 
