@@ -4,6 +4,9 @@
 
 This project implements a 2D raster map system with graphical visualization capabilities. It provides functionality for creating, manipulating, and visualizing 2D maps as integer matrices, with support for pathfinding algorithms, distance calculations, and interactive GUI operations.
 
+## Example for map (map of distances from gui)
+![img.png](ex2/img.png)
+
 ## Table of Contents
 
 1. [Getting Started](#getting-started)
