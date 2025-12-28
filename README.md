@@ -7,20 +7,6 @@ This project implements a 2D raster map system with graphical visualization capa
 ## Example for map (map of distances from gui)
 ![img.png](ex2/img.png)
 
-## Table of Contents
-
-1. [Getting Started](#getting-started)
-2. [Interfaces](#interfaces)
-   - [Map2D](#map2d-interface)
-   - [Pixel2D](#pixel2d-interface)
-3. [Classes](#classes)
-   - [Map](#map-class)
-   - [Index2D](#index2d-class)
-   - [Ex2_GUI](#ex2_gui-class)
-   - [StdDraw](#stddraw-class)
-4. [Usage Examples](#usage-examples)
-5. [Keyboard Shortcuts](#keyboard-shortcuts)
-
 ---
 
 ## Interfaces
