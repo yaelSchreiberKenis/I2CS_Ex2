@@ -67,21 +67,6 @@ public class Ex2_GUI {
         StdDraw.show();
     }
 
-    private static Color valueToColor(int value) {
-        if (value == -1)
-        {
-            return StdDraw.BLACK;
-        }
-        return switch (value % 5) {
-            case 0 -> StdDraw.WHITE;
-            case 1 -> StdDraw.GREEN;
-            case 2 -> StdDraw.BLUE;
-            case 3 -> StdDraw.RED;
-            case 4 -> StdDraw.GRAY;
-            default -> StdDraw.BLACK;
-        };
-    }
-
     /**
      * @param mapFileName
      * @return
@@ -155,7 +140,14 @@ public class Ex2_GUI {
         Map map = generateRandomMap(rand);
         saveMap(map, "map.txt");
         Map map2 = (Map)loadMap("map.txt");
-        drawMap(map2);
+        Pixel2D[] arr = map2.shortestPath(new Index2D(0, 1), new Index2D(4, 9), -1, true);
+        for (Pixel2D pixel2D : arr) {
+            Index2D index = (Index2D) pixel2D;
+            System.out.println(index.getX() + " " + index.getY());
+        }
+        Map distaceMap = (Map)map2.allDistance(new Index2D(1, 0), -1, false);
+        drawMap(distaceMap);
+        saveMap(distaceMap, "distace.txt");
     }
 
     /// ///////////// Private functions ///////////////
@@ -166,9 +158,24 @@ public class Ex2_GUI {
         Map map = new Map(width, height, -1);
         for (int i = 0; i < height; i++) {
             for (int j = 0; j < width; j++) {
-                map.setPixel(j, i, rand.nextInt(5));
+                map.setPixel(j, i, rand.nextInt(6) - 1);
             }
         }
         return map;
+    }
+
+    private static Color valueToColor(int value) {
+        if (value == -1)
+        {
+            return StdDraw.BLACK;
+        }
+        return switch (value % 5) {
+            case 0 -> StdDraw.WHITE;
+            case 1 -> StdDraw.GREEN;
+            case 2 -> StdDraw.BLUE;
+            case 3 -> StdDraw.RED;
+            case 4 -> StdDraw.GRAY;
+            default -> StdDraw.BLACK;
+        };
     }
 }

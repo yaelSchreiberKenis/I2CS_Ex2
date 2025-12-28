@@ -1,5 +1,6 @@
 package ex2;
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.Queue;
 /**
@@ -88,7 +89,7 @@ public class Map implements Map2D, Serializable{
     }
 	@Override
 	public void setPixel(Pixel2D p, int v) {
-        setPixel(p.getY(), p.getX(), v);
+        matrix[p.getY()][p.getX()] = v;
 	}
 
     @Override
@@ -185,8 +186,8 @@ public class Map implements Map2D, Serializable{
                 drawLine(p2, p1, color);
                 return;
             }
-            Index2D reverseP1 = new Index2D(p1.getY(), p1.getX());
-            Index2D reverseP2 = new Index2D(p2.getY(), p2.getX());
+            Pixel2D reverseP1 = new Index2D(p1.getY(), p1.getX());
+            Pixel2D reverseP2 = new Index2D(p2.getY(), p2.getX());
             double[] func = getLinearFunctionFrom2Points(reverseP1, reverseP2);
             for (int y = p1.getY(); y <= p2.getY(); y++) {
                 matrix[y][CalcLinearFunc(func, y)] = color;
@@ -238,7 +239,7 @@ public class Map implements Map2D, Serializable{
         if (new_v == matrix[xy.getY()][xy.getX()]) {
             return 0;
         }
-		return recursiveFill(xy.getY(), xy.getX(), matrix[xy.getY()][xy.getX()], new_v, cyclic);
+		return recursiveFill(xy, matrix[xy.getY()][xy.getX()], new_v, cyclic);
 	}
 
 	@Override
@@ -255,34 +256,104 @@ public class Map implements Map2D, Serializable{
             }
         }
 
+        // label root as explored
+        nodeArray[p1.getY()][p1.getX()].visit(null);
+
+        // Q.enqueue(root)
         Queue<Node> q = new LinkedList<>();
         q.add(new Node(p1));
+
         while (!q.isEmpty()) {
             Node current = q.poll();
             if (getPixel(current.current) == obsColor) {
                 continue;
             }
             if (current.current.equals(p2)) {
-                // TODO return array of all parents with stack
+                ArrayList<Pixel2D> path = new ArrayList<>();
+                while (current.parent != null) {
+                    path.addFirst(current.current);
+                    current = current.parent;
+                }
+                // Add p1
+                path.addFirst(current.current);
+                ans = path.toArray(new Pixel2D[0]);
                 return ans;
             }
 
-
-
-            current.visited = true;
-
-
+            ArrayList<Pixel2D> neighbors = getAllNeighbors((Pixel2D)current.current, cyclic);
+            for (Pixel2D neighbor : neighbors) {
+                if (!nodeArray[neighbor.getY()][neighbor.getX()].visited) {
+                    nodeArray[neighbor.getY()][neighbor.getX()].visit(current);
+                    q.add(nodeArray[neighbor.getY()][neighbor.getX()]);
+                }
+            }
         }
-
-        return ans;
+        return null;
 	}
     @Override
     public Map2D allDistance(Pixel2D start, int obsColor, boolean cyclic) {
-        Map2D ans = null;  // the result.
+        Map2D ans = new Map(getWidth(), getHeight(), -1);  // the result.
+        if (getPixel(start) == obsColor) {
+            return ans;
+        }
+        ans.setPixel(start, 0);
 
+        // Q.enqueue(root)
+        Queue<Pixel2D> q = new LinkedList<>();
+        q.add(start);
+
+        while (!q.isEmpty()) {
+            Pixel2D current = q.poll();
+            ArrayList<Pixel2D> neighbors = getAllNeighbors(current, cyclic);
+
+            for (Pixel2D neighbor : neighbors) {
+                if (ans.getPixel(neighbor) == -1 && this.getPixel(neighbor) != obsColor) {
+                    ans.setPixel(neighbor, ans.getPixel(current) + 1);
+                    q.add(neighbor);
+                }
+            }
+        }
         return ans;
     }
 	////////////////////// Private Methods ///////////////////////
+
+    private ArrayList<Pixel2D> getAllNeighbors(Pixel2D p, boolean cyclic) {
+        ArrayList<Pixel2D> neighbors = new ArrayList<>();
+
+        // Add the up neighbor
+        if (p.getY() < getHeight() - 1) {
+            neighbors.add(new Index2D(p.getX(), p.getY() + 1));
+        }
+        else if (cyclic) {
+            neighbors.add(new Index2D(p.getX(), 0));
+        }
+
+        // Add the down neighbor
+        if (p.getY() > 0) {
+            neighbors.add(new Index2D(p.getX(), p.getY() - 1));
+        }
+        else if (cyclic) {
+            neighbors.add(new Index2D(p.getX(), getHeight() - 1));
+        }
+
+        // Add the right neighbor
+        if (p.getX() < getWidth() - 1) {
+            neighbors.add(new Index2D(p.getX() + 1, p.getY()));
+        }
+        else if (cyclic) {
+            neighbors.add(new Index2D(0, p.getY()));
+        }
+
+        // Add the left neighbor
+        if (p.getX() > 0) {
+            neighbors.add(new Index2D(p.getX() - 1, p.getY()));
+        }
+        else if (cyclic) {
+            neighbors.add(new Index2D(getWidth() - 1, p.getY()));
+        }
+
+        return neighbors;
+    }
 
     private double[] getLinearFunctionFrom2Points(Pixel2D p1, Pixel2D p2) {
         double[] result = new double[2];
@@ -297,44 +368,17 @@ public class Map implements Map2D, Serializable{
         return (int)(func[0] * x + func[1] + 0.5);
     }
 
-    public int recursiveFill(int y, int x, int originColor, int new_v,  boolean cyclic) {
-        if (matrix[y][x] != originColor) {
+    public int recursiveFill(Pixel2D index, int originColor, int new_v,  boolean cyclic) {
+        if (matrix[index.getY()][index.getX()] != originColor) {
             return 0;
         }
 
-        matrix[y][x] = new_v;
+        matrix[index.getY()][index.getX()] = new_v;
         int result = 1;
 
-        // Fill the up neighbor
-        if (y < getHeight() - 1) {
-            result += recursiveFill(y + 1, x, originColor, new_v, cyclic);
-        }
-        else if (cyclic) {
-            result += recursiveFill(0, x, originColor, new_v, cyclic);
-        }
-
-        // Fill the down neighbor
-        if (y > 0) {
-            result += recursiveFill(y - 1, x, originColor, new_v, cyclic);
-        }
-        else if (cyclic) {
-            result += recursiveFill(getHeight() - 1, x, originColor, new_v, cyclic);
-        }
-
-        // Fill the right neighbor
-        if (x < getWidth() - 1) {
-            result += recursiveFill(y, x + 1, originColor, new_v, cyclic);
-        }
-        else if (cyclic) {
-            result += recursiveFill(y, 0, originColor, new_v, cyclic);
-        }
-
-        // Fill the left neighbor
-        if (x > 0) {
-            result += recursiveFill(y, x - 1, originColor, new_v, cyclic);
-        }
-        else if (cyclic) {
-            result += recursiveFill(y, getWidth() - 1, originColor, new_v, cyclic);
+        ArrayList<Pixel2D> neighbors = getAllNeighbors(index, cyclic);
+        for (Pixel2D neighbor : neighbors){
+            result += recursiveFill(neighbor, originColor, new_v, cyclic);
         }
 
         return result;
